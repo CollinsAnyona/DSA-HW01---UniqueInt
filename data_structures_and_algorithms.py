@@ -1,7 +1,7 @@
 import re
 
 #file path
-input_path = r"C:\Users\Admin\Downloads\sample_01.txt"
+input_path = r"/mnt/c/Users/Admin/Downloads/sample_01.txt"
 
 try:
     #opens the file for reading
