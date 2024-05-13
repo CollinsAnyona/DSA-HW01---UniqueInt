@@ -40,14 +40,14 @@ def process_file(input_path, output_path):
 
 def main():
     input_files = [
-        r"/mnt/c/Users/Admin/Downloads/sample_01.txt",
-        r"/mnt/c/Users/Admin/Downloads/sample_02.txt",
-        r"/mnt/c/Users/Admin/Downloads/sample_03.txt",
-        r"/mnt/c/Users/Admin/Downloads/sample_04.txt",
+        "/mnt/c/Users/Admin/Downloads/sample_01.txt",
+        "/mnt/c/Users/Admin/Downloads/sample_02.txt",
+        "/mnt/c/Users/Admin/Downloads/sample_03.txt",
+        "/mnt/c/Users/Admin/Downloads/sample_04.txt",
     ]
     for input_file in input_files:
-        output_file = f"{input_file}_results.txt"
-        process_file(input_file, output_file)
+        output_filename = input_file.split("/")[-1] + "_results.txt"
+        process_file(input_file, output_filename)
 
 if __name__ == "__main__":
     main()
