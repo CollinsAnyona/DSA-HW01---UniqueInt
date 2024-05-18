@@ -1,40 +1,58 @@
-import re
+import time
+import tracemalloc
+import os
 
-def process_file(input_path, output_path):
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]  # Corrected swap operation
+    return arr
+
+def process_file(inputFilePath, outputFilePath):
     try:
-        #opens the file for reading
-        with open(input_path, 'r') as file:
-            content = file.read()
+        # Start measuring time and memory usage
+        start_time = time.time()
+        tracemalloc.start()
 
-            #extracts all numbers from the content
-            integers = []
-            start_index = 0
-            for i, char in enumerate(content):
-                if not char.isdigit():
-                    if start_index < i:
-                        num = int(content[start_index:i])
-                        integers.append(num)
-                    start_index = i + 1
-            
-            #initializes a boolean array to keep track of encountered number within range
-            encountered = [False] * 2047
+        unique_integers = set()
 
-            #loops through integers and adds them to unique_integers if not already present
-            for num in integers:
-                if -1023 <= num <= 1023:
-                    index = num + 1023
-                    encountered[index] = True
+        # Read the input file
+        with open(inputFilePath, 'r') as input_file:
+            for line in input_file:
+                try:
+                    # Attempt to convert each line to an integer
+                    integer = int(line.strip())
+                    unique_integers.add(integer)
+                except ValueError:
+                    # If conversion fails, skip the line
+                    continue
 
-            #writes the unique numbers to an output file
-            with open(output_path, 'w') as output_file:
-                for i, is_encountered in enumerate(encountered):
-                    if is_encountered:
-                        num = i -1023
-                        output_file.write(f"{num}\n")
+        # Sort unique integers using custom bubble sort
+        sorted_unique_integers = bubble_sort(list(unique_integers))
 
-            print(f"Unique integers written to {output_path}")
+        # Ensure the output directory exists
+        os.makedirs(os.path.dirname(outputFilePath), exist_ok=True)
+
+        # Write the sorted unique integers to the output file
+        with open(outputFilePath, 'w') as output_file:
+            for num in sorted_unique_integers:
+                output_file.write(f"{num}\n")
+
+        print(f"Unique integers written to {outputFilePath}")
+
+        # Stop measuring time and memory usage
+        end_time = time.time()
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+        # Print the runtime and peak memory usage
+        print(f"Runtime: {end_time - start_time:.6f} seconds")
+        print(f"Memory usage: {peak / 10**6:.6f} MB")
+
     except FileNotFoundError:
-        print(f"File not found: {input_path}")
+        print(f"File not found: {inputFilePath}")
     except Exception as e:
         print(f"Error processing file: {e}")
 
@@ -45,9 +63,12 @@ def main():
         "/mnt/c/Users/Admin/Downloads/sample_03.txt",
         "/mnt/c/Users/Admin/Downloads/sample_04.txt",
     ]
+    output_directory = "/mnt/c/Users/Admin/Downloads/Results/"
+
     for input_file in input_files:
-        output_filename = input_file.split("/")[-1] + "_results.txt"
+        output_filename = os.path.join(output_directory, os.path.basename(input_file) + "_results.txt")
         process_file(input_file, output_filename)
 
 if __name__ == "__main__":
     main()
+
