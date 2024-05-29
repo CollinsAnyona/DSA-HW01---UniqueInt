@@ -7,14 +7,8 @@ def bubble_sort(arr):
     for i in range(n):
         for j in range(0, n-i-1):
             if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
+                arr[j], arr[j+1] = arr[j+1], arr[j] 
     return arr
-
-def is_unique(integer, unique_list):
-    for num in unique_list:
-        if num == integer:
-            return False
-    return True
 
 def process_file(inputFilePath, outputFilePath):
     try:
@@ -22,27 +16,21 @@ def process_file(inputFilePath, outputFilePath):
         start_time = time.time()
         tracemalloc.start()
 
-        unique_integers = []
+        unique_integers = set()
 
         # Read the input file
         with open(inputFilePath, 'r') as input_file:
             for line in input_file:
-                # Manually remove whitespace and newline characters
-                line = ''.join(c for c in line if c.isdigit() or c == '-' or c.isspace()).strip()
-                
                 try:
                     # Attempt to convert each line to an integer
-                    integer = int(line)
-                    
-                    # Check if the integer is unique before adding
-                    if is_unique(integer, unique_integers):
-                        unique_integers.append(integer)
+                    integer = int(line.strip())
+                    unique_integers.add(integer)
                 except ValueError:
                     # If conversion fails, skip the line
                     continue
 
         # Sort unique integers using custom bubble sort
-        sorted_unique_integers = bubble_sort(unique_integers)
+        sorted_unique_integers = bubble_sort(list(unique_integers))
 
         # Ensure the output directory exists
         os.makedirs(os.path.dirname(outputFilePath), exist_ok=True)
